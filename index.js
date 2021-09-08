@@ -13,7 +13,7 @@ app.use(cors())
 app.use('/auth',auth);
 app.use('/file',file);
 
-mongoose.connect('mongodb+srv://admin-summit:2146255sb8@cluster0.fyuq8.mongodb.net/fileHost',{
+mongoose.connect('mongodb+srv://new_subhod-31:amritaR123@cluster0.diqpv.mongodb.net/file_host_db',{
     useNewUrlParser:true,
     useUnifiedTopology:true
 }).then(()=>{
