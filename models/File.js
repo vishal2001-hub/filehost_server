@@ -17,6 +17,10 @@ const fileSchema = new Schema({
    file_type:{
        type:"String",
        required:true
+   },
+   share_to:{
+       type:"Array",
+       default:[]
    }
 
 })
