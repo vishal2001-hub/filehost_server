@@ -63,6 +63,9 @@ router.get('/user',async (req,res)=>{
 })
 .post('/login',async (req,res)=>{
     const {email,password} = req.body;
+    if(email.length===0 || password.length===0){
+        return res.status(401).send({message:"All fields required!"})
+    }
 
     const user = await User.findOne({email:email});
 
@@ -77,6 +80,7 @@ router.get('/user',async (req,res)=>{
     }
 
     const token = await jwt.sign({id:user._id},"mysecretkey");
+    // console.log(token)
 
     res.status(200).send(token);
 
@@ -84,3 +88,6 @@ router.get('/user',async (req,res)=>{
 })
 
 module.exports = router;
+
+
+// SERVER
