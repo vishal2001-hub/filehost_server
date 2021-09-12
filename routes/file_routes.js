@@ -3,12 +3,13 @@ const File = require("../models/File");
 const User = require("../models/User");
 
 router.post('/upload',async (req,res)=>{
-    const {name,url,upload_by,file_type} = req.body;
+    const {name,url,upload_by,file_type,size} = req.body;
     const newPublicFile = await new File({
         file_name:name,
         url,
         upload_by,
-        file_type
+        file_type,
+        size
     }).save();
 
     if(!newPublicFile){
@@ -16,15 +17,34 @@ router.post('/upload',async (req,res)=>{
     }
     res.status(200).send({message:"File uploaded successfully!",record:newPublicFile});
 })
-.get('/list',async (req,res)=>{
-    const publicFiles = await File.find();
+.get('/list/:id',async (req,res)=>{
+    console.log(req.params)
+    const publicFiles = await File.find({upload_by:req.params.id,inTrash:false});
     return res.status(200).send(publicFiles);
 })
-.get('/list/private',async (req,res)=>{
-    const {upload_by} = req.params;
-    console.log(req.params);
-    const privateFiles = await File.find({upload_by:upload_by});
-    return res.status(200).send(privateFiles);
+.get('/list/trash/:id',async (req,res)=>{
+    console.log(req.params)
+    const publicFiles = await File.find({upload_by:req.params.id,inTrash:true});
+    return res.status(200).send(publicFiles);
 })
+.put('/trash/:id',async(req,res)=>{
+    const {id} = req.params;
+
+    File.updateOne({_id:id},{inTrash:true}).then(()=>{
+        return res.status(200).send({message:"File Moved to Trash!"})
+    }).catch((e)=>{
+        res.status(200).send({message:"Error while Move to Trash!"})
+    })
+}).
+put('/untrash/:id',async(req,res)=>{
+    const {id} = req.params;
+
+    File.updateOne({_id:id},{inTrash:false}).then(()=>{
+        return res.status(200).send({message:"File Restored from Trash!"})
+    }).catch((e)=>{
+        res.status(200).send({message:"Error while Restoring from Trash!"})
+    })
+})
+
 
 module.exports = router;

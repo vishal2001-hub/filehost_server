@@ -27,7 +27,7 @@ router.get('/user',async (req,res)=>{
 
    const user = await User.findOne({_id:id});
 
-   res.status(200).send({name:user.name,email:user.email,id:user._id});
+   res.status(200).send({name:user.name,email:user.email,id:user._id,avatar:user.avatar});
 }).post('/register',check('email','Invalid Email').isEmail(),async (req,res)=>{
     console.log(req.body);
     const errors = validationResult(req);
@@ -85,6 +85,17 @@ router.get('/user',async (req,res)=>{
     res.status(200).send(token);
 
 
+})
+.put('/edit',async (req,res)=>{
+    const {id,email,name,avatar} = req.body;
+    User.updateOne({_id:id},{name:name,email:email,avatar:avatar}).then(()=>{
+        User.findOne({_id:id}).then((user)=>{
+            return res.status(200).send({message:"User detail updated!",user:{name:user.name,email:user.email,id:user._id,avatar:user.avatar}})
+        })
+        
+    }).catch((e)=>{
+        res.status(500).send({message:"Error while updating!"})
+    })
 })
 
 module.exports = router;

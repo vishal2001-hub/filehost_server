@@ -21,9 +21,19 @@ const fileSchema = new Schema({
    share_to:{
        type:"Array",
        default:[]
+   },
+   size:{
+       type:"String",
+       required:true
+   },
+   inTrash:{
+       type:"Boolean",
+       default:false
    }
 
-})
+},{
+    timestamps: true
+  })
 
 
 const File = model('File',fileSchema);
